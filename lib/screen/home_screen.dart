@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:my_app/models/product.dart';
 import 'package:my_app/models/menu_item.dart';
 import 'package:my_app/models/grocery.dart';
 import 'package:my_app/helper/grocery_card.dart';
+import 'package:my_app/helper/page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -141,13 +144,18 @@ class _HomeScreen extends State<HomeScreen> {
           ),
           SizedBox(height: 20),
           CupertinoSearchTextField(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(12),
             backgroundColor: Color(0xFFF2F3F2),
+            cursorColor: Colors.black,
+            placeholder: 'Search your product',
             style: TextStyle(
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w600,
             ),
-            prefixIcon: Icon(CupertinoIcons.search),
+            prefixIcon: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 12),
+              child: Icon(CupertinoIcons.search, size: 24),
+            ),
           ),
 
           SizedBox(height: 20),
@@ -176,7 +184,10 @@ class _HomeScreen extends State<HomeScreen> {
                   },
                 ),
               ),
-              buildIndicator(),
+              PageIndicator(
+                itemCount: _sliders.length,
+                currentIndex: currentSlideIndex,
+              ),
             ],
           ),
           SizedBox(height: 20),
@@ -309,7 +320,7 @@ class _HomeScreen extends State<HomeScreen> {
           ),
           SizedBox(height: 20),
           SizedBox(
-            height: 270,
+            height: 250,
             child: ListView(
               scrollDirection: Axis.horizontal,
               // shrinkWrap: true,
@@ -338,33 +349,6 @@ class _HomeScreen extends State<HomeScreen> {
             BottomNavigationBarItem(
               icon: ImageIcon(Svg(item.icon)),
               label: item.label,
-            ),
-        ],
-      ),
-    );
-  }
-
-  Padding buildIndicator() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (int index = 0; index < _sliders.length; index++)
-            AnimatedContainer(
-              duration: Duration(milliseconds: 500),
-              width: currentSlideIndex == index ? 16 : 6,
-              height: 6,
-              margin: EdgeInsets.only(
-                right: index == _sliders.length - 1 ? 0 : 8,
-              ),
-              decoration: BoxDecoration(
-                color: currentSlideIndex == index
-                    ? Colors.green
-                    : Colors.grey.shade400,
-                borderRadius: BorderRadius.circular(20),
-              ),
             ),
         ],
       ),

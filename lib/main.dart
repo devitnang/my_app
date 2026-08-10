@@ -1,7 +1,8 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'screen/home_screen.dart';
+import 'package:my_app/screen/login_screen.dart';
+import 'package:my_app/screen/splash_screen.dart';
 
 void main() async {
   runApp(
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const HomeScreen(),
+      home: const SplashScreen(),
       theme: ThemeData(
         fontFamily: 'Poppins',
         primaryColor: Colors.blue,
