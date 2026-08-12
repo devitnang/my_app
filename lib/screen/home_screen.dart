@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +8,7 @@ import 'package:my_app/models/menu_item.dart';
 import 'package:my_app/models/grocery.dart';
 import 'package:my_app/helper/grocery_card.dart';
 import 'package:my_app/helper/page_indicator.dart';
+import 'package:my_app/widget/bottom_navigation.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,6 +24,7 @@ class _HomeScreen extends State<HomeScreen> {
     Product(
       id: 1,
       name: 'Organic Banana',
+      subtitle: 'Made In Cambodia',
       description: '7pcs, Price',
       price: 4.99,
       image: 'assets/images/banana.png',
@@ -32,6 +32,7 @@ class _HomeScreen extends State<HomeScreen> {
     Product(
       id: 2,
       name: 'Red Apple',
+      subtitle: 'Made In TK',
       description: '1Kg, Price',
       price: 8.99,
       image: 'assets/images/apple.png',
@@ -39,6 +40,7 @@ class _HomeScreen extends State<HomeScreen> {
     Product(
       id: 3,
       name: 'Organic Carrot',
+      subtitle: 'Made In KPS',
       description: '1Kg, Price',
       price: 2.75,
       image: 'assets/images/carrot.png',
@@ -46,6 +48,7 @@ class _HomeScreen extends State<HomeScreen> {
     Product(
       id: 4,
       name: 'Orange',
+      subtitle: 'Made In Cambodia',
       description: '1Kg, Price',
       price: 6.79,
       image: 'assets/images/orange.png',
@@ -53,6 +56,7 @@ class _HomeScreen extends State<HomeScreen> {
     Product(
       id: 5,
       name: 'Red Pepper',
+      subtitle: 'Made In Cambodia',
       description: '1Kg, Price',
       price: 2.79,
       image: 'assets/images/Pepper.png',
@@ -60,6 +64,7 @@ class _HomeScreen extends State<HomeScreen> {
     Product(
       id: 6,
       name: 'Tomato',
+      subtitle: 'Made In Cambodia',
       description: '1Kg, Price',
       price: 7.99,
       image: 'assets/images/Tomato.png',
@@ -67,6 +72,7 @@ class _HomeScreen extends State<HomeScreen> {
     Product(
       id: 7,
       name: 'Beef',
+      subtitle: 'Made In Cambodia',
       description: '1Kg, Price',
       price: 19.99,
       image: 'assets/images/Beef.png',
@@ -74,6 +80,7 @@ class _HomeScreen extends State<HomeScreen> {
     Product(
       id: 8,
       name: 'Broiler Chicken',
+      subtitle: 'Made In Cambodia',
       description: '1Kg, Price',
       price: 22.99,
       image: 'assets/images/Chicken.png',
@@ -81,7 +88,8 @@ class _HomeScreen extends State<HomeScreen> {
     Product(
       id: 9,
       name: 'Green Apple',
-      description: '1Kg, Price',
+      subtitle: '1Kg, Price',
+      description: 'Made in Cambodia',
       price: 12.99,
       image: 'assets/images/greenapple.png',
     ),
@@ -338,20 +346,7 @@ class _HomeScreen extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.black87,
-        showUnselectedLabels: true,
-        type: BottomNavigationBarType.fixed,
-        items: [
-          for (MenuItem item in _menus)
-            BottomNavigationBarItem(
-              icon: ImageIcon(Svg(item.icon)),
-              label: item.label,
-            ),
-        ],
-      ),
+      bottomNavigationBar: const BottomNavigation(currentIndex: 0),
     );
   }
 }

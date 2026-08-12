@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app/models/product.dart';
-import 'package:my_app/screen/product_detail.dart';
+import 'package:my_app/screen/product_detail_screen.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -17,7 +16,7 @@ class ProductCard extends StatelessWidget {
             transitionDuration: const Duration(milliseconds: 300),
             reverseTransitionDuration: const Duration(milliseconds: 300),
             pageBuilder: (context, animation, secondaryAnimation) =>
-                ProductDetail(product: product),
+                ProductDetailScreen(product: product),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
                   final tween = Tween(

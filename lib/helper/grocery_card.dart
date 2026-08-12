@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/models/grocery.dart';
+import 'dart:math';
 
 class GroceryCard extends StatelessWidget {
   final Grocery grocery;
@@ -8,17 +9,16 @@ class GroceryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Color> cardColors = [
-      Colors.yellow.shade200,
-      Colors.green.shade200,
-      Colors.orange.shade200,
-    ];
-
     return Container(
       width: 220,
       height: 90,
       decoration: BoxDecoration(
-        color: cardColors[index % cardColors.length],
+        color: Color.fromRGBO(
+          Random().nextInt(255),
+          Random().nextInt(255),
+          Random().nextInt(255),
+          0.1,
+        ),
         // color: Colors.yellow.shade200,
         borderRadius: BorderRadius.circular(20),
       ),

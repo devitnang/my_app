@@ -1,28 +1,21 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:my_app/helper/page_indicator.dart';
 import 'package:my_app/models/product.dart';
 
-class ProductDetail extends StatefulWidget {
-  final Product? product;
-  const ProductDetail({super.key, this.product});
+class ProductDetailScreen extends StatefulWidget {
+  final Product product;
+  const ProductDetailScreen({super.key, required this.product});
 
   @override
-  State<ProductDetail> createState() => _ProductDetailState();
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
 
-class _ProductDetailState extends State<ProductDetail> {
-  int quantity = 1;
-  bool isFavorite = false;
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool isDetailExpanded = true;
-  int currentSlideIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final String name = widget.product?.name ?? 'Naturel Red Apple'; // 
-    final String description = widget.product?.description ?? '1kg, Price';
-    final double price = widget.product?.price ?? 4.99;
-    final String image = widget.product?.image ?? 'assets/images/apple.png';
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -31,74 +24,84 @@ class _ProductDetailState extends State<ProductDetail> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                Container(
-                  height: 300,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFF2F3F2),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(25),
-                      bottomRight: Radius.circular(25),
+                Stack(
+                  children: [
+                    Container(
+                      height: 300,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFF2F3F2),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(40),
+                          bottomRight: Radius.circular(40),
+                        ),
+                      ),
+                      child: SafeArea(
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(30),
+                                child: Image.asset(
+                                  widget.product.images.isEmpty
+                                      ? widget.product.image
+                                      : widget.product.images.first,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                  child: SafeArea(
-                    child: Stack(
-                      children: [
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                          top: 10,
-                          left: 10,
-                          child: IconButton(
-                            onPressed: () => Navigator.pop(context),
-                            icon: const Icon(
-                              Icons.arrow_back_ios_new,
-                              size: 20,
-                              color: Colors.black87,
+                    Positioned(
+                      top: 0,
+                      left: 8,
+                      child: SafeArea(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(40),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.10),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: IconButton(
+                                onPressed: () => Navigator.pop(context),
+                                icon: Icon(Icons.arrow_back_ios_new),
+                              ),
                             ),
                           ),
                         ),
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 300),
-                          top: 10,
-                          right: 10,
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.ios_share,
-                              size: 22,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ),
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(30.0),
-                            child: Image.asset(image, fit: BoxFit.contain),
-                          ),
-                        ),
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 300),
-                          bottom: 8,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: PageIndicator(
-                              itemCount: 3,
-                              currentIndex: currentSlideIndex,
-                              onTap: (index) =>
-                                  setState(() => currentSlideIndex = index),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    Positioned(
+                      top: 0,
+                      right: 8,
+                      child: SafeArea(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(40),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.10),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.ios_share),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-
                 Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -107,81 +110,84 @@ class _ProductDetailState extends State<ProductDetail> {
                         children: [
                           Expanded(
                             child: Text(
-                              name,
-                              style: const TextStyle(
+                              widget.product.name,
+                              style: TextStyle(
                                 fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
                           IconButton(
-                            onPressed: () =>
-                                setState(() => isFavorite = !isFavorite),
+                            onPressed: () {
+                              widget.product.toggleFavorite();
+                              setState(() {});
+                            },
                             icon: Icon(
-                              isFavorite
+                              widget.product.isFavorite
                                   ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: isFavorite
-                                  ? Colors.red
-                                  : Colors.grey.shade600,
+                                  : Icons.favorite_outline,
                             ),
+                            color: widget.product.isFavorite
+                                ? Colors.red.shade400
+                                : null,
                           ),
                         ],
-                      ),
-
+                      ), 
                       Text(
-                        description,
-                        style: const TextStyle(
+                        widget.product.subtitle,
+                        style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           color: Colors.black54,
                         ),
                       ),
-
-                      const SizedBox(height: 25),
-
+                      SizedBox(height: 25),
                       Row(
                         children: [
                           IconButton(
                             onPressed: () {
-                              if (quantity > 1) setState(() => quantity--);
+                              widget.product.decreaseQty();
+                              setState(() {});
                             },
                             icon: Icon(
-                              Icons.remove,
+                              Icons.remove_rounded,
+                              size: 18,
                               color: Colors.grey.shade600,
-                              size: 24,
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 10,
+                            constraints: BoxConstraints(
+                              minWidth: 48,
+                              maxHeight: 48,
                             ),
+                            alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black12),
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.black26),
                             ),
                             child: Text(
-                              '$quantity',
-                              style: const TextStyle(
-                                fontSize: 18,
+                              '${widget.product.quantity}',
+                              style: TextStyle(
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                           IconButton(
-                            onPressed: () => setState(() => quantity++),
-                            icon: const Icon(
-                              Icons.add,
+                            onPressed: () {
+                              widget.product.increaseQty();
+                              setState(() {});
+                            },
+                            icon: Icon(
+                              Icons.add_rounded,
+                              size: 18,
                               color: Color(0xFF53B175),
-                              size: 24,
                             ),
                           ),
-                          const Spacer(),
+                          Spacer(),
                           Text(
-                            '\$${(price * quantity).toStringAsFixed(2)}',
-                            style: const TextStyle(
+                            '\$${(widget.product.price * widget.product.quantity).toStringAsFixed(2)}',
+                            style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
@@ -189,20 +195,18 @@ class _ProductDetailState extends State<ProductDetail> {
                           ),
                         ],
                       ),
-
-                      const SizedBox(height: 20),
-                      const Divider(color: Colors.black12, height: 1),
-
+                      SizedBox(height: 20),
+                      Divider(color: Colors.black12, height: 1),
                       InkWell(
                         onTap: () => setState(
                           () => isDetailExpanded = !isDetailExpanded,
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          padding: EdgeInsets.symmetric(vertical: 16),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 'Product Detail',
                                 style: TextStyle(
                                   fontSize: 16,
@@ -220,12 +224,11 @@ class _ProductDetailState extends State<ProductDetail> {
                           ),
                         ),
                       ),
-
                       if (isDetailExpanded)
-                        const Padding(
-                          padding: EdgeInsets.only(bottom: 12.0),
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 12),
                           child: Text(
-                            'Apples Are Nutritious. Apples May Be Good For Weight Loss. Apples May Be Good For Your Heart. As Part Of A Healthful And Varied Diet.',
+                            widget.product.description,
                             style: TextStyle(
                               fontSize: 13,
                               color: Colors.black54,
@@ -233,17 +236,15 @@ class _ProductDetailState extends State<ProductDetail> {
                             ),
                           ),
                         ),
-
-                      const Divider(color: Colors.black12, height: 1),
-
+                      Divider(color: Colors.black12, height: 1),
                       InkWell(
                         onTap: () {},
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          padding: EdgeInsets.symmetric(vertical: 16),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 'Nutritions',
                                 style: TextStyle(
                                   fontSize: 16,
@@ -254,7 +255,7 @@ class _ProductDetailState extends State<ProductDetail> {
                               Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.symmetric(
+                                    padding: EdgeInsets.symmetric(
                                       horizontal: 8,
                                       vertical: 3,
                                     ),
@@ -271,8 +272,8 @@ class _ProductDetailState extends State<ProductDetail> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  const Icon(
+                                  SizedBox(width: 8),
+                                  Icon(
                                     Icons.arrow_forward_ios,
                                     size: 14,
                                     color: Colors.black87,
@@ -283,17 +284,15 @@ class _ProductDetailState extends State<ProductDetail> {
                           ),
                         ),
                       ),
-
-                      const Divider(color: Colors.black12, height: 1),
-
+                      Divider(color: Colors.black12, height: 1),
                       InkWell(
                         onTap: () {},
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          padding: EdgeInsets.symmetric(vertical: 16),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 'Review',
                                 style: TextStyle(
                                   fontSize: 16,
@@ -306,15 +305,15 @@ class _ProductDetailState extends State<ProductDetail> {
                                   Row(
                                     children: List.generate(
                                       5,
-                                      (index) => const Icon(
+                                      (index) => Icon(
                                         Icons.star,
                                         color: Color(0xFFF3603F),
                                         size: 18,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  const Icon(
+                                  SizedBox(width: 8),
+                                  Icon(
                                     Icons.arrow_forward_ios,
                                     size: 14,
                                     color: Colors.black87,
@@ -331,27 +330,23 @@ class _ProductDetailState extends State<ProductDetail> {
               ],
             ),
           ),
-
           Padding(
-            padding: const EdgeInsets.only(
-              left: 20,
-              right: 20,
-              bottom: 24,
-              top: 10,
-            ),
+            padding: EdgeInsets.only(left: 20, right: 20, bottom: 24, top: 10),
             child: SizedBox(
               width: double.infinity,
               height: 60,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context, 'Added Item To Cart');
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF53B175),
+                  backgroundColor: Color(0xFF53B175),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(19),
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
+                child: Text(
                   'Add To Basket',
                   style: TextStyle(
                     fontSize: 18,

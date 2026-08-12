@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:my_app/utils/dailog/dailog_error.dart';
+import 'package:my_app/utils/dailog/dailog_success.dart';
 import 'home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:my_app/models/user.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,6 +33,54 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   FocusNode _emailNode = FocusNode();
+
+  Future<void> saveCredential(User user) async {
+    SharedPreferences preference = await SharedPreferences.getInstance();
+    await preference.setString('sv8.16.pos.tokens', user.token ?? '');
+  }
+
+  void signIn() async {
+    final email = 'devitnang@gmail.com';
+    final password = 'vit123';
+    if (_emailController.text == email &&
+        _passwordController.text == password) {
+      await saveCredential(
+        User(
+          token:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjI1MjQ2MDgwMDB9.S33_59_8Rj3_gB7y89uRE0C1q9T8B6W37_tYpD5f7_k',
+          username: '',
+          password: '',
+        ),
+      );
+      if (!mounted) return;
+      showDialog(
+        context: context,
+        builder: (context) => DialogSuccess(
+          title: 'Success',
+          message: 'Logged In successfully!',
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+              (route) => false,
+            );
+          },
+        ),
+      );
+    } else {
+      if (!mounted) return;
+      showDialog(
+        context: context,
+        builder: (context) => DialogError(
+          title: 'Login Failed',
+          message: 'Invalid Credential!',
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 30),
 
                     TextField(
+                      controller: _emailController,
                       focusNode: _emailNode,
                       keyboardType: TextInputType.emailAddress,
                       cursorColor: Colors.black,
@@ -181,20 +233,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: () {
-                          if (_isChecked) {
-                            print('Save');
-                          } else {
-                            print('Never save');
-                          }
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
-                            ),
-                            (route) => false,
-                          );
-                        },
+                        onPressed: signIn,
+                        // onPressed: signIn() {
+                        //   // if (_isChecked) {
+                        //   //   print('Save');
+                        //   // } else {
+                        //   //   print('Never save');
+                        //   // }
+                        //   // Navigator.pushAndRemoveUntil(
+                        //   //   context,
+                        //   //   MaterialPageRoute(
+                        //   //     builder: (context) => const HomeScreen(),
+                        //   //   ),
+                        //   //   (route) => false,
+                        //   // );
+                        // },
                         style: ButtonStyle(
                           shadowColor: WidgetStateColor.resolveWith(
                             (states) => states.contains(WidgetState.disabled)
