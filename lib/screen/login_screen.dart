@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/routes/app_route.dart';
 import 'package:my_app/utils/dailog/dailog_error.dart';
 import 'package:my_app/utils/dailog/dailog_success.dart';
 import 'home_screen.dart';
@@ -18,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _obscureText = true;
   bool _isChecked = false;
+  bool _isFormValid = false;
 
   void _togglePassword() {
     setState(() {
@@ -41,46 +43,51 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void signIn() async {
     final email = 'devitnang@gmail.com';
-    final password = 'vit123';
-    if (_emailController.text == email &&
-        _passwordController.text == password) {
-      await saveCredential(
-        User(
-          token:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjI1MjQ2MDgwMDB9.S33_59_8Rj3_gB7y89uRE0C1q9T8B6W37_tYpD5f7_k',
-          username: '',
-          password: '',
-        ),
-      );
-      if (!mounted) return;
-      showDialog(
-        context: context,
-        builder: (context) => DialogSuccess(
-          title: 'Success',
-          message: 'Logged In successfully!',
-          onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-              (route) => false,
-            );
-          },
-        ),
-      );
-    } else {
-      if (!mounted) return;
-      showDialog(
-        context: context,
-        builder: (context) => DialogError(
-          title: 'Login Failed',
-          message: 'Invalid Credential!',
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      );
+    final password = 'Vit@1234';
+    if (_formKey.currentState?.validate() == null) return;
+    if (_formKey.currentState!.validate()) {
+      if (_emailController.text == email &&
+          _passwordController.text == password) {
+        await saveCredential(
+          User(
+            token:
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjI1MjQ2MDgwMDB9.S33_59_8Rj3_gB7y89uRE0C1q9T8B6W37_tYpD5f7_k',
+            username: '',
+            password: '',
+          ),
+        );
+        if (!mounted) return;
+        showDialog(
+          context: context,
+          builder: (context) => DialogSuccess(
+            title: 'Success',
+            message: 'Logged In successfully!',
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AppRoutes.home,
+                (route) => false,
+              );
+            },
+          ),
+        );
+      } else {
+        if (!mounted) return;
+        showDialog(
+          context: context,
+          builder: (context) => DialogError(
+            title: 'Login Failed',
+            message: 'Invalid Credential!',
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        );
+      }
     }
   }
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -103,97 +110,143 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SizedBox(height: 20),
-                    Image.asset(
-                      'assets/images/setec_logo.png',
-                      width: 120,
-                      height: 120,
-                      fit: BoxFit.contain,
-                    ),
-
-                    SizedBox(height: 20),
-
-                    Center(
-                      child: Text(
-                        'Welcome, BACK!',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
-                        ),
-                      ),
-                    ),
-
-                    Center(
-                      child: Text(
-                        'Please login to continue',
-                        style: TextStyle(fontSize: 14, color: Colors.grey),
-                      ),
-                    ),
-
-                    SizedBox(height: 30),
-
-                    TextField(
-                      controller: _emailController,
-                      focusNode: _emailNode,
-                      keyboardType: TextInputType.emailAddress,
-                      cursorColor: Colors.black,
-                      decoration: InputDecoration(
-                        fillColor: Colors.grey.withValues(alpha: 0.25),
-                        filled: true,
-                        labelText: 'Email',
-                        labelStyle: TextStyle(color: Colors.green),
-                        hintText: 'example@gmail.com',
-                        prefixIcon: Icon(Icons.alternate_email),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _emailController.clear();
-                            });
-                          },
-                          icon: Icon(Icons.clear),
-                        ),
-                        border: InputBorder.none,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.green),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: 20),
-
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: _obscureText,
-                      cursorColor: Colors.black,
-                      decoration: InputDecoration(
-                        fillColor: Colors.grey.withValues(alpha: 0.25),
-                        filled: true,
-                        labelText: 'Password',
-                        labelStyle: TextStyle(color: Colors.green),
-                        hintText: 'Enter your password',
-                        prefixIcon: Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          onPressed: _togglePassword,
-                          icon: Icon(
-                            _obscureText
-                                ? Icons.visibility_off
-                                : Icons.visibility,
+                    Form(
+                      key: _formKey,
+                      onChanged: () {
+                        setState(() {
+                          _isFormValid =
+                              _formKey.currentState?.validate() ?? false;
+                        });
+                      },
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/images/setec_logo.png',
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.contain,
                           ),
-                        ),
-                        border: InputBorder.none,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.green),
-                        ),
+
+                          SizedBox(height: 20),
+
+                          Center(
+                            child: Text(
+                              'Welcome, BACK!',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ),
+
+                          Center(
+                            child: Text(
+                              'Please login to continue',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 30),
+
+                          TextFormField(
+                            controller: _emailController,
+                            focusNode: _emailNode,
+                            keyboardType: TextInputType.emailAddress,
+                            cursorColor: Colors.black,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value == null ||
+                                  value.replaceAll(' ', '').isEmpty) {
+                                return 'Please enter email address!';
+                              }
+                              RegExp emailRegex = RegExp(
+                                r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]',
+                              );
+                              if (!emailRegex.hasMatch(value)) {
+                                return 'Invalid email format!';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Colors.grey.withValues(alpha: 0.25),
+                              filled: true,
+                              labelText: 'Email',
+                              labelStyle: TextStyle(color: Colors.green),
+                              hintText: 'example@gmail.com',
+                              prefixIcon: Icon(Icons.alternate_email),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _emailController.clear();
+                                  });
+                                },
+                                icon: Icon(Icons.clear),
+                              ),
+                              border: InputBorder.none,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Colors.green),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 20),
+
+                          TextFormField(
+                            controller: _passwordController,
+                            obscureText: _obscureText,
+                            cursorColor: Colors.black,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter password';
+                              }
+                              // Strong password [a-z], [A-Z], [0-9], !@#%^&*()
+                              RegExp passwordRegex = RegExp(
+                                r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%^&*()]).{8,}$',
+                              );
+                              if (!passwordRegex.hasMatch(value)) {
+                                return 'Invalid password format!';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Colors.grey.withValues(alpha: 0.25),
+                              filled: true,
+                              labelText: 'Password',
+                              labelStyle: TextStyle(color: Colors.green),
+                              hintText: 'Enter your password',
+                              prefixIcon: Icon(Icons.lock_outline),
+                              suffixIcon: IconButton(
+                                onPressed: _togglePassword,
+                                icon: Icon(
+                                  _obscureText
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                              ),
+                              border: InputBorder.none,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Colors.green),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
 
@@ -233,7 +286,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: signIn,
+                        onPressed: _isFormValid ? signIn : null,
                         // onPressed: signIn() {
                         //   // if (_isChecked) {
                         //   //   print('Save');

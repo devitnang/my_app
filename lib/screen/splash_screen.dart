@@ -1,5 +1,6 @@
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_app/routes/app_route.dart';
 import 'package:my_app/screen/home_screen.dart';
 import 'package:my_app/screen/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,16 +38,16 @@ class _SplashScreenState extends State<SplashScreen> {
     final String? token = preferences.getString('sv8.16.pos.tokens');
     if (token == null) {
       if (!mounted) return;
-      Navigator.pushAndRemoveUntil(
+      Navigator.pushNamedAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        AppRoutes.login,
         (route) => false,
       );
     } else {
       if (!mounted) return;
-      Navigator.pushAndRemoveUntil(
+      Navigator.pushNamedAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        AppRoutes.home,
         (route) => false,
       );
     }

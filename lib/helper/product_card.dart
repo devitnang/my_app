@@ -16,7 +16,7 @@ class ProductCard extends StatelessWidget {
             transitionDuration: const Duration(milliseconds: 300),
             reverseTransitionDuration: const Duration(milliseconds: 300),
             pageBuilder: (context, animation, secondaryAnimation) =>
-                ProductDetailScreen(product: product),
+                ProductDetailScreen(id: product.id),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
                   final tween = Tween(
@@ -36,44 +36,78 @@ class ProductCard extends StatelessWidget {
         width: 190,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black12),
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
           color: Colors.white,
         ),
-        padding: EdgeInsets.only(top: 20, left: 16, right: 16, bottom: 16),
+        padding: const EdgeInsets.only(
+          top: 16,
+          left: 14,
+          right: 14,
+          bottom: 12,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(child: Image.asset(product.image, width: 100)),
-            SizedBox(height: 20),
+            Center(
+              child: Hero(
+                tag: '${product.id}',
+                child: Image.network(
+                  product.image,
+                  width: 90,
+                  height: 90,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) => const Icon(
+                    Icons.image_not_supported,
+                    size: 50,
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
             Text(
               product.name,
               textAlign: TextAlign.start,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 4),
             Text(
-              product.description,
+              product.subtitle.isNotEmpty
+                  ? product.subtitle
+                  : product.description,
               textAlign: TextAlign.start,
-              style: TextStyle(
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.normal,
                 color: Colors.black54,
               ),
             ),
-            SizedBox(height: 8),
+            const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
               children: [
                 Text(
                   '\$${product.price}',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 12),
+                  padding: const EdgeInsets.only(left: 8),
                   child: IconButton(
                     onPressed: () {},
-                    icon: Icon(Icons.add, color: Colors.white),
+                    icon: const Icon(Icons.add, color: Colors.white, size: 20),
+                    constraints: const BoxConstraints.tightFor(
+                      width: 36,
+                      height: 36,
+                    ),
+                    padding: EdgeInsets.zero,
                     style: IconButton.styleFrom(
                       backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(

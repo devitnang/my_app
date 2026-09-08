@@ -21,6 +21,17 @@ class Product {
     this.quantity = 1,
   });
 
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      name: json['pname'] as String? ?? json['name'] as String? ?? '',
+      subtitle: json['subtitle'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      image: json['image'] as String? ?? '',
+    );
+  }
+
   void toggleFavorite() {
     isFavorite = !isFavorite;
   }

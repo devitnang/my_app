@@ -10,7 +10,7 @@ class GroceryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 220,
+      width: 240,
       height: 90,
       decoration: BoxDecoration(
         color: Color.fromRGBO(
@@ -19,21 +19,34 @@ class GroceryCard extends StatelessWidget {
           Random().nextInt(255),
           0.1,
         ),
-        // color: Colors.yellow.shade200,
         borderRadius: BorderRadius.circular(20),
       ),
-      padding: EdgeInsets.only(top: 20, left: 16, right: 16, bottom: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(grocery.imageUrl, width: 60),
-          SizedBox(width: 16),
-          Text(
-            grocery.name,
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
+          Image.network(
+            grocery.imageUrl,
+            width: 55,
+            height: 55,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) => const Icon(
+              Icons.image_not_supported,
+              size: 40,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              grocery.name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
           ),
         ],
